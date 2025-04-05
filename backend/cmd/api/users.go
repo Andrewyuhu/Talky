@@ -1,12 +1,31 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
-	// RELEARN HOW TO PARSE INFO FROM A REQUEST
-	// VERIFY CRED IN DB
-	// JWT GEN
-	w.Write([]byte("login end point\n"))
+	input := struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}{}
+
+	err := app.readJSON(r, &input)
+
+	if err != nil {
+		fmt.Println("read error")
+		panic("dead")
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"data": input}, nil)
+
+	if err != nil {
+		fmt.Println("write error")
+		panic("dead")
+	}
+
 }
 
 func (app *application) signUpHandler(w http.ResponseWriter, r *http.Request) {
