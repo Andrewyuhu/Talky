@@ -2,10 +2,26 @@ package main
 
 import "net/http"
 
-func (app *application) serverError(w http.ResponseWriter, r *http.Request) {
-
+func (app *application) serverErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	app.errorLogger.Println(err)
+	message := "server was unable to process the request"
+	app.errorResponse(w, r, http.StatusInternalServerError, message)
 }
 
-func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, status int, message any) {
+func (app *application) errorResponse(w http.ResponseWriter, _ *http.Request, status int, message any) {
+	err := app.writeJSON(w, status, envelope{"error": message}, nil)
+	if err != nil {
+		app.errorLogger.Println(err)
+		w.WriteHeader(500)
+	}
+}
 
+func (app *application) badRequestResponse(w http.ResponseWriter, r *http.Request, err error) {
+	app.errorLogger.Println(err)
+	message := "invalid request body format"
+	app.errorResponse(w, r, http.StatusBadRequest, message)
+}
+
+func (app *application) failedValidationResponse(w http.ResponseWriter, r *http.Request, errors map[string]string) {
+	app.errorResponse(w, r, http.StatusUnprocessableEntity, errors)
 }
