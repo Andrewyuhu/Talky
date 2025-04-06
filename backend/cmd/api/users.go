@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/internals/auth"
 	"backend/internals/data"
 	"backend/internals/validator"
 	"errors"
@@ -21,16 +22,27 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	v := validator.NewValidator()
+	id, err := app.usermodel.Authenticate(input.Username, input.Password)
 
-	validator.MinLength("username", input.Username, 5, v)
-
-	if !v.IsValid() {
-		app.failedValidationResponse(w, r, v.InvalidProperties)
+	if err != nil {
+		if errors.Is(err, data.ErrInvalidCredentials) {
+			app.notAuthorizedResponse(w, r)
+			return
+		}
+		app.serverErrorResponse(w, r, err)
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"data": input}, nil)
+	jwtToken, err := auth.GenerateJWT(id)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	auth.SetAuthCookie(w, jwtToken)
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "login successful"}, nil)
 
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
@@ -87,5 +99,12 @@ func (app *application) signUpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) logoutHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("logout endpoint\n"))
+	auth.ClearAuthCookie(w)
+
+	err := app.writeJSON(w, http.StatusOK, envelope{"message": "logout successful"}, nil)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
 }

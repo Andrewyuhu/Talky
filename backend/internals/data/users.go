@@ -13,6 +13,12 @@ type UserModel struct {
 	db *sql.DB
 }
 
+type PublicUser struct {
+	Id       uuid.UUID
+	Username string
+	Email    string
+}
+
 func New(db *sql.DB) *UserModel {
 	return &UserModel{
 		db: db,
@@ -78,4 +84,38 @@ func (m *UserModel) Authenticate(username, password string) (uuid.UUID, error) {
 	}
 
 	return id, nil
+}
+
+func (m *UserModel) Get(id uuid.UUID) (*PublicUser, error) {
+	var user PublicUser
+
+	stmt := `
+	SELECT id, username, email FROM users
+	WHERE id = $1;
+	`
+
+	err := m.db.QueryRow(stmt, id).Scan(&user.Id, &user.Username, &user.Email)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrRecordNotFound
+		}
+		return nil, err
+	}
+	return &user, nil
+
+}
+
+func (m *UserModel) Exists(id uuid.UUID) (bool, error) {
+	stmt := `SELECT 1 FROM users WHERE id = $1;`
+
+	var exists int
+	err := m.db.QueryRow(stmt, id).Scan(&exists)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, ErrRecordNotFound
+		}
+		return false, err
+	}
+	return true, nil
 }

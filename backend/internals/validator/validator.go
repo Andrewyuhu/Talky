@@ -45,3 +45,9 @@ func ValidEmail(key string, value string, v *validator) {
 		v.addError(key, "incorrect email format")
 	}
 }
+
+func IsEmpty(key string, value string, v *validator) {
+	if utf8.RuneCountInString(value) == 0 {
+		v.addError(key, "property cannot be empty")
+	}
+}
