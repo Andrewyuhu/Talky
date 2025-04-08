@@ -6,6 +6,8 @@ import (
 	"backend/internals/validator"
 	"errors"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -105,6 +107,34 @@ func (app *application) logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
+	}
+
+}
+
+func (app *application) meHandler(w http.ResponseWriter, r *http.Request) {
+	// by here, the user should already have a valid JWT token
+	id, ok := r.Context().Value(userIDKey).(uuid.UUID)
+
+	if !ok {
+		app.serverErrorResponse(w, r, errors.New("issue with authentication"))
+	}
+
+	user, err := app.usermodel.Get(id)
+
+	if err != nil {
+		if errors.Is(err, data.ErrRecordNotFound) {
+			app.notAuthorizedResponse(w, r)
+			return
+		}
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
 	}
 
 }

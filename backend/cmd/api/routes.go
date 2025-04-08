@@ -18,6 +18,7 @@ func (app *application) router() http.Handler {
 	router.Handler(http.MethodPost, "/v1/user/login", dynamic.Then(http.HandlerFunc(app.loginHandler)))
 	router.Handler(http.MethodPost, "/v1/user/logout", dynamic.Then(http.HandlerFunc(app.logoutHandler)))
 	router.Handler(http.MethodPost, "/v1/user/signup", dynamic.Then(http.HandlerFunc(app.signUpHandler)))
+	router.Handler(http.MethodGet, "/v1/user/me", protected.Then(http.HandlerFunc(app.meHandler)))
 
 	router.Handler(http.MethodGet, "/v1/protected", protected.Then(http.HandlerFunc(app.healthcheckHandler)))
 
