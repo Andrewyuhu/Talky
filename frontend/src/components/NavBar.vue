@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const isMobileMenuOpen = ref(false);
-
 const navItems = ref([
   { label: "Home", route: "/" },
   { label: "Messages", route: "/messages" },
   { label: "Sign Up", route: "/signup" },
+  { label: "Login", route: "/login" },
 ]);
 </script>
 

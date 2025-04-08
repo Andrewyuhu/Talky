@@ -3,5 +3,5 @@ import MainLayout from "../layouts/MainLayout.vue";
 </script>
 
 <template>
-  <MainLayout> Messages </MainLayout>
+  <MainLayout> Messages app here </MainLayout>
 </template>
