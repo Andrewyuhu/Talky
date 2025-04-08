@@ -24,7 +24,7 @@ async function submitForm(e: Event) {
       password: passwordInput.value,
     };
     await login(payload);
-    router.push("/");
+    router.push("/messages");
   } catch (error) {
     if (isAxiosError(error)) {
       switch (error.response?.status) {

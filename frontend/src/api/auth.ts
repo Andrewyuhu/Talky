@@ -23,4 +23,20 @@ function login(payload: LoginInput) {
   });
 }
 
-export { signup, login };
+function logout() {
+  return axios.post(
+    "http://localhost:8080/v1/user/logout",
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+}
+
+function authenticateUser() {
+  return axios.get("http://localhost:8080/v1/user/me", {
+    withCredentials: true,
+  });
+}
+
+export { signup, login, authenticateUser, logout };
