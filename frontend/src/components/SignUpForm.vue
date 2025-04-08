@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { useRouter } from "vue-router";
+import { signup } from "../api/auth.ts";
+import type { SignUpInput } from "../api/auth.ts";
 import {
   isNotBlank,
   isValidEmail,
@@ -8,20 +11,41 @@ import {
   isAlphanumeric,
 } from "../utils/validator.ts";
 import { ref } from "vue";
+import { isAxiosError } from "axios";
 
+const router = useRouter();
 const emailInput = ref("");
 const passwordInput = ref("");
 const usernameInput = ref("");
-const errors: Map<string, string> = ref(new Map());
+const errors = ref(new Map<string, string>());
 
-function submitForm(e: event) {
+async function submitForm(e: Event) {
   e.preventDefault();
   if (!isValidForm()) {
-    console.log("Invalid form");
     return;
   }
-  console.log("Valid form");
-  return;
+  try {
+    const payload: SignUpInput = {
+      email: emailInput.value,
+      username: usernameInput.value,
+      password: passwordInput.value,
+    };
+    await signup(payload);
+    router.push("/");
+  } catch (error) {
+    if (isAxiosError(error)) {
+      switch (error.response?.status) {
+        case 422:
+          if (error.response?.data.error == "EMAIL_EXISTS") {
+            errors.value = new Map([["email", "email already exists"]]);
+          }
+          if (error.response?.data.error == "USERNAME_EXISTS") {
+            errors.value = new Map([["username", "username already exists"]]);
+          }
+      }
+      return;
+    }
+  }
 }
 
 function isValidForm(): boolean {
@@ -42,6 +66,12 @@ function isValidForm(): boolean {
     isNotBlank(usernameInput.value),
     "username",
     "username cannot be blank",
+    newErrors
+  );
+  addError(
+    isAlphanumeric(usernameInput.value),
+    "username",
+    "username cannot contain non-alphanumeric characters",
     newErrors
   );
   addError(
