@@ -1,6 +1,7 @@
 package main
 
 import (
+	hub "backend/cmd/api/websocket"
 	"backend/internals/data"
 	"database/sql"
 	"flag"
@@ -16,6 +17,7 @@ type application struct {
 	errorLogger *log.Logger
 	infoLogger  *log.Logger
 	usermodel   *data.UserModel
+	hubManager  *hub.HubManager
 }
 
 type config struct {
@@ -37,6 +39,7 @@ func main() {
 		cfg:         cfg,
 		errorLogger: errorLogger,
 		infoLogger:  infoLogger,
+		hubManager:  hub.NewHubManager(),
 	}
 
 	db, err := openDB(app.cfg.db.dsn)
@@ -52,6 +55,8 @@ func main() {
 		Addr:    fmt.Sprintf(":%d", app.cfg.port),
 		Handler: app.router(),
 	}
+
+	go app.hubManager.Run()
 
 	fmt.Printf("Starting server on: %d\n", app.cfg.port)
 	err = server.ListenAndServe()
