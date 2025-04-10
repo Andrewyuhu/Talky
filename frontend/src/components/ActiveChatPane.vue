@@ -16,8 +16,6 @@ watch(isConnected, () => {
 function handleSubmit(e: Event) {
   e.preventDefault();
   if (!auth.user || messageInput.value === "") return;
-  console.log(auth.user);
-  console.log(auth.user.username);
   send(auth.user.username, messageInput.value, new Date().toISOString());
   messageInput.value = "";
 }
