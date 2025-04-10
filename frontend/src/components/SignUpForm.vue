@@ -154,7 +154,7 @@ function isValidForm(): boolean {
         }}</span>
       </div>
       <button
-        class="relative border-2 px-4 py-2 rounded-md border-black z-10 bg-white w-full"
+        class="border-2 px-4 py-2 rounded-md border-black z-10 bg-white w-full"
         @click="submitForm"
       >
         Sign Up

@@ -24,7 +24,7 @@ async function logoutHandler() {
 
 <template>
   <nav
-    class="flex justify-between items-center h-[75px] px-8 border-b border-gray-300"
+    class="flex justify-between items-center h-[8vh] px-8 border-b border-gray-300 flex-shrink-0"
   >
     <div class="flex items-center gap-4 text-xl">
       <img src="../assets/logo.png" class="aspect-auto w-20" />
