@@ -117,6 +117,7 @@ func (app *application) meHandler(w http.ResponseWriter, r *http.Request) {
 
 	if !ok {
 		app.serverErrorResponse(w, r, errors.New("issue with authentication"))
+		return
 	}
 
 	user, err := app.usermodel.Get(id)

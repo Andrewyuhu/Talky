@@ -21,6 +21,7 @@ func (app *application) router() http.Handler {
 	router.Handler(http.MethodGet, "/v1/user/me", protected.Then(http.HandlerFunc(app.meHandler)))
 
 	router.Handler(http.MethodPost, "/v1/chat", protected.Then(http.HandlerFunc(app.createChatHandler)))
+	router.Handler(http.MethodGet, "/v1/chat", protected.Then(http.HandlerFunc(app.getChatsHandler)))
 
 	router.Handler(http.MethodGet, "/v1/ws/chat/:roomID", dynamic.Then(http.HandlerFunc(app.serveWs)))
 

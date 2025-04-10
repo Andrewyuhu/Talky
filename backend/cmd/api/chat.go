@@ -52,6 +52,7 @@ func (app *application) createChatHandler(w http.ResponseWriter, r *http.Request
 
 	if !ok {
 		app.serverErrorResponse(w, r, errors.New("issue with authentication"))
+		return
 	}
 
 	input := struct {
@@ -88,5 +89,30 @@ func (app *application) createChatHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	w.Write([]byte("Chat created!"))
+
+}
+
+func (app *application) getChatsHandler(w http.ResponseWriter, r *http.Request) {
+
+	id, ok := r.Context().Value(userIDKey).(uuid.UUID)
+
+	if !ok {
+		app.serverErrorResponse(w, r, errors.New("issue with authentication"))
+		return
+	}
+
+	chats, err := app.chatmodel.GetChats(id)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"chats": chats}, nil)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
 
 }

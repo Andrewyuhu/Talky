@@ -12,8 +12,8 @@ CREATE TABLE chats (
     id SERIAL PRIMARY KEY,
     user1_id UUID NOT NULL,
     user2_id UUID NOT NULL,
-    last_message_content TEXT,
-    last_message_at TIMESTAMPTZ,
+    last_message_content TEXT DEFAULT 'No messages yet',
+    last_message_at TIMESTAMPTZ DEFAULT NOW(),
     
     CONSTRAINT fk_user1 FOREIGN KEY (user1_id) REFERENCES users(id),
     CONSTRAINT fk_user2 FOREIGN KEY (user2_id) REFERENCES users(id),
