@@ -14,12 +14,12 @@ type UserModel struct {
 }
 
 type PublicUser struct {
-	Id       uuid.UUID
-	Username string
-	Email    string
+	Id       uuid.UUID `json:"id"`
+	Username string    `json:"username"`
+	Email    string    `json:"email"`
 }
 
-func New(db *sql.DB) *UserModel {
+func NewUserModel(db *sql.DB) *UserModel {
 	return &UserModel{
 		db: db,
 	}
@@ -51,8 +51,8 @@ func (m *UserModel) Insert(username, email, password string) error {
 					return ErrDuplicateEmail
 				}
 			}
-			return err
 		}
+		return err
 	}
 
 	return nil
@@ -118,4 +118,23 @@ func (m *UserModel) Exists(id uuid.UUID) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (m *UserModel) GetByUsername(username string) (uuid.UUID, error) {
+	var id uuid.UUID
+
+	stmt := `
+	SELECT id FROM users
+	WHERE username = $1;
+	`
+
+	err := m.db.QueryRow(stmt, username).Scan(&id)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return uuid.Nil, ErrRecordNotFound
+		}
+		return uuid.Nil, err
+	}
+	return id, nil
 }

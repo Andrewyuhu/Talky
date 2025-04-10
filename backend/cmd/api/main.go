@@ -17,6 +17,7 @@ type application struct {
 	errorLogger *log.Logger
 	infoLogger  *log.Logger
 	usermodel   *data.UserModel
+	chatmodel   *data.ChatModel
 	hubManager  *hub.HubManager
 }
 
@@ -48,7 +49,9 @@ func main() {
 		app.errorLogger.Fatal(err)
 	}
 
-	app.usermodel = data.New(db)
+	app.usermodel = data.NewUserModel(db)
+	app.chatmodel = data.NewChatModel(db)
+
 	app.infoLogger.Println("Connected to database")
 
 	server := http.Server{

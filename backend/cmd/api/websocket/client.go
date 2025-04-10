@@ -2,7 +2,6 @@ package hub
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"time"
 
@@ -55,7 +54,6 @@ func (c *Client) ReadPump() {
 	for {
 		// assume err happens if conn closes
 		_, message, err := c.Conn.ReadMessage()
-		fmt.Println(message)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)

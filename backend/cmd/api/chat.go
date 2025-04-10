@@ -2,10 +2,13 @@ package main
 
 import (
 	hub "backend/cmd/api/websocket"
+	"backend/internals/data"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 )
@@ -13,6 +16,9 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 func (app *application) serveWs(w http.ResponseWriter, r *http.Request) {
@@ -38,4 +44,49 @@ func (app *application) serveWs(w http.ResponseWriter, r *http.Request) {
 
 	go client.WritePump()
 	go client.ReadPump()
+}
+
+func (app *application) createChatHandler(w http.ResponseWriter, r *http.Request) {
+
+	id, ok := r.Context().Value(userIDKey).(uuid.UUID)
+
+	if !ok {
+		app.serverErrorResponse(w, r, errors.New("issue with authentication"))
+	}
+
+	input := struct {
+		Username string `json:"username"`
+	}{}
+
+	err := app.readJSON(r, &input)
+
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	recipientID, err := app.usermodel.GetByUsername(input.Username)
+
+	if err != nil {
+		if errors.Is(err, data.ErrRecordNotFound) {
+			app.badRequestResponse(w, r, err)
+			return
+		}
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.chatmodel.InsertNewChat(id, recipientID)
+
+	if err != nil {
+		if errors.Is(err, data.ErrDuplicateChat) {
+			app.errorResponse(w, r, http.StatusUnprocessableEntity, err.Error())
+			return
+		}
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	w.Write([]byte("Chat created!"))
+
 }

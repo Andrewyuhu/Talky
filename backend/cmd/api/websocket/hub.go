@@ -73,11 +73,14 @@ func (h *Hub) Run() {
 		case client := <-h.Register:
 			fmt.Println("Registered client")
 			h.clients[client] = true
+			fmt.Printf("Current clients : %d\n", len(h.clients))
 		case client := <-h.unregister:
 
 			if _, ok := h.clients[client]; ok {
+				fmt.Println("Unregisering client")
 				delete(h.clients, client)
 				close(client.Send)
+				fmt.Printf("Current clients : %d\n", len(h.clients))
 			}
 
 			// close hub if no clients
@@ -89,8 +92,6 @@ func (h *Hub) Run() {
 			}
 
 		case message := <-h.broadcast:
-			fmt.Println("Broadcasting")
-			fmt.Println(message)
 			for client := range h.clients {
 				select {
 				case client.Send <- message:
