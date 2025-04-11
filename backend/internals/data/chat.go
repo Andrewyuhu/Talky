@@ -17,6 +17,7 @@ type Chat struct {
 	Id                   int       `json:"id"`
 	SenderId             uuid.UUID `json:"senderID"`
 	ReceiverID           uuid.UUID `json:"receiverID"`
+	RecieverUserName     string    `json:"recieverUserName"`
 	Last_message_content string    `json:"last_message_content"`
 	Last_message_at      time.Time `json:"last_message_at"`
 }
@@ -49,7 +50,21 @@ func (m *ChatModel) InsertNewChat(userID uuid.UUID, recipientId uuid.UUID) error
 
 func (m *ChatModel) GetChats(userID uuid.UUID) ([]Chat, error) {
 
-	stmt := `SELECT * FROM chats WHERE user1_id = $1 OR user2_id = $1`
+	stmt := `
+	SELECT chats.id, 
+  user1_id, 
+  user2_id, 
+  CASE 
+    WHEN user1_id = $1 THEN user2.username
+    ELSE user1.username
+  END as receiver_username,
+  last_message_content, 
+  last_message_at
+	FROM chats
+	JOIN users user1 ON user1.id = chats.user1_id
+	JOIN users user2 ON user2.id = chats.user2_id
+	WHERE user1_id = $1 OR user2_id = $1;
+	`
 
 	rows, err := m.db.Query(stmt, userID)
 	if err != nil {
@@ -63,10 +78,11 @@ func (m *ChatModel) GetChats(userID uuid.UUID) ([]Chat, error) {
 		var id int
 		var senderId uuid.UUID
 		var recieverID uuid.UUID
+		var recieverUserName string
 		var last_message_content string
 		var last_message_at time.Time
 
-		err := rows.Scan(&id, &senderId, &recieverID, &last_message_content, &last_message_at)
+		err := rows.Scan(&id, &senderId, &recieverID, &recieverUserName, &last_message_content, &last_message_at)
 		if err != nil {
 			return nil, err
 		}
@@ -75,6 +91,7 @@ func (m *ChatModel) GetChats(userID uuid.UUID) ([]Chat, error) {
 			Id:                   id,
 			SenderId:             senderId,
 			ReceiverID:           recieverID,
+			RecieverUserName:     recieverUserName,
 			Last_message_content: last_message_content,
 			Last_message_at:      last_message_at,
 		})
