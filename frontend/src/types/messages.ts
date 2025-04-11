@@ -2,6 +2,7 @@ export type Message = {
   username: string;
   message: string;
   sentAt: string;
+  chatId: string;
 };
 
 export type Chat = {
