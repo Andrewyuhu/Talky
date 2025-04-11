@@ -1,24 +1,7 @@
-<script lang="ts" setup>
-import { getUserChats } from "../api/chat";
-import { onMounted } from "vue";
-import type { Chat } from "../types/messages";
-import ChatPreview from "./ChatPreview.vue";
-import { ref } from "vue";
-
-const chats = ref<Chat[]>([]);
-
-onMounted(async () => {
-  try {
-    const response = await getUserChats();
-    chats.value = response.data.chats as Chat[];
-  } catch (error) {
-    console.log(error);
-  }
-});
-</script>
+<script lang="ts" setup></script>
 
 <template>
-  <div class="flex flex-col bg-blue-400 p-4">
+  <div class="flex flex-col bg-blue-400 p-4 gap-2">
     <form class="flex gap-2">
       <input
         type="text"
@@ -28,6 +11,6 @@ onMounted(async () => {
         CREATE
       </button>
     </form>
-    <ChatPreview v-for="chat in chats" :chat="chat"></ChatPreview>
+    <slot></slot>
   </div>
 </template>

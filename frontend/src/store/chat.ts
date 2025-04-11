@@ -11,10 +11,14 @@ export const useChatStore = defineStore("chats", {
   }),
   actions: {
     setChats(chats: Chat[]) {
-      this.chats = chats;
+      this.chats = [...chats];
     },
-    addChat(chat: Chat) {
-      this.chats.push(chat);
+    updateChatPreview(message: string, chatId: string) {
+      const c = this.chats.find((chat) => String(chat.id) === chatId);
+      if (!c) {
+        return;
+      }
+      c.last_message_content = message;
     },
   },
 });

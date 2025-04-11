@@ -1,13 +1,21 @@
 <script lang="ts" setup>
 import Message from "./Message.vue";
 import useWebSocket from "../utils/useWebSocket";
-import { watch, ref } from "vue";
+import { watch, ref, toRef } from "vue";
 import { useAuthStore } from "../store/auth";
 
+const props = defineProps<{ chatId: string }>();
+const chatId = toRef(props, "chatId");
 const messageInput = ref("");
-const wsUrl = ref("ws://localhost:8080/v1/ws/chat/1");
 const auth = useAuthStore();
-const { isConnected, messages, send } = useWebSocket(wsUrl);
+const { isConnected, messages, send } = useWebSocket(
+  "ws://localhost:8080/v1/ws/chat/",
+  chatId
+);
+
+watch(chatId, (n, o) => {
+  console.log("Changing from chat " + o + " to " + n);
+});
 
 watch(isConnected, () => {
   console.log(`Connection Status : ${isConnected.value}`);
@@ -22,7 +30,8 @@ function handleSubmit(e: Event) {
 </script>
 
 <template>
-  <div v-if="auth.user" class="flex flex-col flex-1 min-h-0">
+  <div v-if="chatId == ''">No chat open</div>
+  <div v-else-if="auth.user" class="flex flex-col flex-1 min-h-0">
     <div class="bg-blue-500 p-4">Chat Header</div>
     <div class="flex flex-col flex-1 p-2 overflow-y-auto gap-2">
       <div class="mb-auto"></div>

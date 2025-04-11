@@ -1,25 +1,35 @@
 import { onUnmounted, ref, watch, type Ref } from "vue";
 import { type Message } from "../types/messages";
+import { useChatStore } from "../store/chat";
 
-export default function useWebSocket(urlRef: Ref<string>) {
+export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
   const socket = ref<null | WebSocket>(null);
   const messages = ref<Message[]>([]);
   const isConnected = ref(false);
   const error = ref<Event | null>(null);
+
+  const chatStore = useChatStore();
+
   let currentUrl = "";
 
   const connect = (url: string) => {
     if (socket.value && currentUrl === url) return;
+    socket.value?.close();
+    isConnected.value = false;
     const ws = new WebSocket(url);
     socket.value = ws;
     currentUrl = url;
+
     ws.onopen = () => {
       isConnected.value = true;
+      console.log(socket.value);
+      console.log("Connected to new websocket");
     };
 
     ws.onmessage = (event) => {
-      console.log("Raw message:", event.data);
       let msg = JSON.parse(event.data) as Message;
+      let chatId = msg.chatId;
+      chatStore.updateChatPreview(msg.message, chatId);
       messages.value.push(msg);
     };
 
@@ -30,7 +40,10 @@ export default function useWebSocket(urlRef: Ref<string>) {
 
     ws.onclose = () => {
       isConnected.value = false;
-      socket.value = null;
+      if (socket.value === ws) {
+        socket.value = null;
+        currentUrl = "";
+      }
     };
   };
 
@@ -40,13 +53,12 @@ export default function useWebSocket(urlRef: Ref<string>) {
 
   const send = (username: string, content: string, sentAt: string) => {
     if (socket.value && isConnected.value) {
-      console.log(`Username : ${username}`);
       let newMessage: Message = {
         username,
         message: content,
         sentAt,
+        chatId: chatIdRef.value,
       };
-
       console.log(JSON.stringify(newMessage));
       socket.value.send(JSON.stringify(newMessage));
     } else {
@@ -55,9 +67,12 @@ export default function useWebSocket(urlRef: Ref<string>) {
   };
 
   watch(
-    urlRef,
-    (newUrl) => {
-      connect(newUrl);
+    chatIdRef,
+    (newChatId, oldChatId) => {
+      if (newChatId != oldChatId && newChatId != "") {
+        console.log(`${url}${newChatId}`);
+        connect(`${url}${newChatId}`);
+      }
     },
     { immediate: true }
   );
