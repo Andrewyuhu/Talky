@@ -3,12 +3,13 @@ import Message from "./Message.vue";
 import useWebSocket from "../utils/useWebSocket";
 import { watch, ref, toRef } from "vue";
 import { useAuthStore } from "../store/auth";
+import { type Message as MessageType } from "../types/messages";
 
-const props = defineProps<{ chatId: string }>();
+const props = defineProps<{ chatId: string; messages: MessageType[] }>();
 const chatId = toRef(props, "chatId");
 const messageInput = ref("");
 const auth = useAuthStore();
-const { isConnected, messages, send } = useWebSocket(
+const { isConnected, send } = useWebSocket(
   "ws://localhost:8080/v1/ws/chat/",
   chatId
 );

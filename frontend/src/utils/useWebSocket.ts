@@ -1,14 +1,16 @@
 import { onUnmounted, ref, watch, type Ref } from "vue";
 import { type Message } from "../types/messages";
 import { useChatStore } from "../store/chat";
+import { useMessageStore } from "../store/message";
 
 export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
   const socket = ref<null | WebSocket>(null);
-  const messages = ref<Message[]>([]);
+
   const isConnected = ref(false);
   const error = ref<Event | null>(null);
 
   const chatStore = useChatStore();
+  const messageStore = useMessageStore();
 
   let currentUrl = "";
 
@@ -30,7 +32,7 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
       let msg = JSON.parse(event.data) as Message;
       let chatId = msg.chatId;
       chatStore.updateChatPreview(msg.message, chatId);
-      messages.value.push(msg);
+      messageStore.addMessage(msg, chatId);
     };
 
     ws.onerror = (err) => {
@@ -81,5 +83,5 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
     disconnect();
   });
 
-  return { socket, messages, isConnected, error, disconnect, send };
+  return { socket, isConnected, error, disconnect, send };
 }

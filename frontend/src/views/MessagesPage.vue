@@ -3,18 +3,23 @@ import MainLayout from "../layouts/MainLayout.vue";
 import ActiveChatPane from "../components/ActiveChatPane.vue";
 import ChatsPane from "../components/ChatsPane.vue";
 import { getUserChats } from "../api/chat";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import type { Chat } from "../types/messages";
 import { useChatStore } from "../store/chat";
 import ChatPreview from "../components/ChatPreview.vue";
+import { useMessageStore } from "../store/message";
 
 const chatStore = useChatStore();
+const messageStore = useMessageStore();
 const currentChatId = ref("");
 
 function handleChatSwitch(chatId: number) {
   currentChatId.value = String(chatId);
-  console.log("updating chat");
 }
+
+const currentChatMessages = computed(() => {
+  return messageStore.messages.get(currentChatId.value) || [];
+});
 
 onMounted(async () => {
   try {
@@ -38,7 +43,11 @@ onMounted(async () => {
           @click="handleChatSwitch(chat.id)"
         ></ChatPreview>
       </ChatsPane>
-      <ActiveChatPane class="col-span-2" :chatId="currentChatId">
+      <ActiveChatPane
+        class="col-span-2"
+        :chatId="currentChatId"
+        :messages="currentChatMessages"
+      >
       </ActiveChatPane>
     </div>
   </MainLayout>
