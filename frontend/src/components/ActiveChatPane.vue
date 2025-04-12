@@ -25,7 +25,7 @@ watch(isConnected, () => {
 function handleSubmit(e: Event) {
   e.preventDefault();
   if (!auth.user || messageInput.value === "") return;
-  send(auth.user.username, messageInput.value, new Date().toISOString());
+  send(auth.user.id, messageInput.value, new Date().toISOString());
   messageInput.value = "";
 }
 </script>
@@ -39,7 +39,7 @@ function handleSubmit(e: Event) {
       <Message
         v-for="message in messages"
         :message="message"
-        :username="auth.user.username"
+        :senderId="auth.user.id"
       ></Message>
     </div>
     <div class="p-2">

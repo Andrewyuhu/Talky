@@ -3,10 +3,13 @@ import { ref } from "vue";
 import { type Message } from "../types/messages";
 const props = defineProps<{
   message: Message;
-  username: string;
+  senderId: string;
 }>();
 
-const isUser = ref(props.username == props.message.username);
+console.log(props.senderId);
+console.log(props.message.senderId);
+
+const isUser = ref(props.senderId == props.message.senderId);
 </script>
 
 <template>

@@ -53,10 +53,10 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
     socket.value?.close();
   };
 
-  const send = (username: string, content: string, sentAt: string) => {
+  const send = (senderId: string, content: string, sentAt: string) => {
     if (socket.value && isConnected.value) {
       let newMessage: Message = {
-        username,
+        senderId,
         message: content,
         sentAt,
         chatId: chatIdRef.value,
