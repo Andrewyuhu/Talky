@@ -40,6 +40,35 @@ func (m *MessageModel) Insert(msg Message) error {
 	return nil
 }
 
-func (m *MessageModel) Get(chatId int) ([]Message, error) {
-	return nil, nil
+func (m *MessageModel) Get(chatID int) ([]Message, error) {
+	stmt := `
+	SELECT sender_id, message, sent_at, chat_id FROM messages
+	WHERE chat_id = $1
+	`
+
+	rows, err := m.db.Query(stmt, chatID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	chats := make([]Message, 0)
+
+	for rows.Next() {
+		var SenderId uuid.UUID
+		var Msg string
+		var SentAt time.Time
+		var ChatId int
+
+		err := rows.Scan(&SenderId, &Msg, &SentAt, &ChatId)
+
+		if err != nil {
+			return nil, err
+		}
+
+		chats = append(chats, Message{SenderId, Msg, SentAt, ChatId})
+
+	}
+
+	return chats, nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	hub "backend/cmd/api/websocket"
+	"backend/internals/auth"
 	"backend/internals/data"
 	"errors"
 	"fmt"
@@ -23,20 +24,46 @@ var upgrader = websocket.Upgrader{
 
 func (app *application) serveWs(w http.ResponseWriter, r *http.Request) {
 
-	params := httprouter.ParamsFromContext(r.Context())
-	id := params.ByName("roomID")
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
+	userID, ok := r.Context().Value(userIDKey).(uuid.UUID)
+
+	if !ok {
+		auth.ClearAuthCookie(w)
+		app.notAuthorizedResponse(w, r)
 		return
 	}
 
-	// database operation to check if room exists & if user belongs in room needs to go here
+	params := httprouter.ParamsFromContext(r.Context())
+	stringChatID := params.ByName("chatID")
+	chatID, err := ConvertParamInt(stringChatID)
 
-	room := app.hubManager.GetRoom(id)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	valid, err := app.chatmodel.ValidateChat(userID, chatID)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	if !valid {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	room := app.hubManager.GetRoom(stringChatID)
 	if room == nil {
 		fmt.Println("creating chat room")
-		room = app.hubManager.AddRoom(id)
+		room = app.hubManager.AddRoom(stringChatID)
 	}
 	go room.Run()
 	client := &hub.Client{Hub: room, DB: app.messagemodel, Conn: conn, Send: make(chan []byte, 256)}

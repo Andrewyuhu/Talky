@@ -22,8 +22,9 @@ func (app *application) router() http.Handler {
 
 	router.Handler(http.MethodPost, "/v1/chat", protected.Then(http.HandlerFunc(app.createChatHandler)))
 	router.Handler(http.MethodGet, "/v1/chat", protected.Then(http.HandlerFunc(app.getChatsHandler)))
+	router.Handler(http.MethodGet, "/v1/ws/chat/:chatID", protected.Then(http.HandlerFunc(app.serveWs)))
 
-	router.Handler(http.MethodGet, "/v1/ws/chat/:roomID", dynamic.Then(http.HandlerFunc(app.serveWs)))
+	router.Handler(http.MethodGet, "/v1/message/:chatID", protected.Then(http.HandlerFunc(app.getMessagesHandler)))
 
 	corsRouter := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173"}, // Your frontend's origin

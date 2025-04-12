@@ -9,6 +9,7 @@ import (
 	"maps"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 type envelope map[string]any
@@ -72,4 +73,19 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	w.Write(js)
 
 	return nil
+}
+
+func ConvertParamInt(param string) (int, error) {
+
+	v, err := strconv.Atoi(param)
+
+	if err != nil {
+		return 0, err
+	}
+
+	if v < 1 {
+		return 0, errors.New("invalid parameters")
+	}
+
+	return v, nil
 }

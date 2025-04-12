@@ -101,6 +101,51 @@ func (m *ChatModel) GetChats(userID uuid.UUID) ([]Chat, error) {
 	return chats, nil
 }
 
+func (m *ChatModel) Exists(chatID int) (bool, error) {
+	stmt := `SELECT EXISTS(SELECT 1 FROM chats WHERE id = $1)`
+	var exists bool
+	err := m.db.QueryRow(stmt, chatID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
+func (m *ChatModel) UserBelongsToChat(chatID int, userID uuid.UUID) (bool, error) {
+	stmt := `SELECT EXISTS(SELECT 1 FROM chats WHERE id = $1 AND (user1_id = $2 OR user2_id = $2))`
+	var exists bool
+	err := m.db.QueryRow(stmt, chatID, userID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
+func (m *ChatModel) ValidateChat(userID uuid.UUID, chatID int) (bool, error) {
+
+	exists, err := m.Exists(chatID)
+
+	if err != nil {
+		return false, err
+	}
+
+	if !exists {
+		return false, nil
+	}
+
+	belongs, err := m.UserBelongsToChat(chatID, userID)
+
+	if err != nil {
+		return false, err
+	}
+
+	if !belongs {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 func sortUUIDsLexo(a, b uuid.UUID) (uuid.UUID, uuid.UUID) {
 	if a.String() < b.String() {
 		return a, b
