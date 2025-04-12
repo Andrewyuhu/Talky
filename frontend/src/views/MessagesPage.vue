@@ -35,7 +35,7 @@ const currentRecipient = computed(() => {
   return chatStore.getRecipientName(currentChatId.value);
 });
 
-onMounted(async () => {
+async function fetchChats() {
   try {
     const response = await getUserChats();
     chatStore.setChats(response.data.chats as Chat[]);
@@ -43,13 +43,17 @@ onMounted(async () => {
   } catch (error) {
     console.log(error);
   }
+}
+
+onMounted(async () => {
+  fetchChats();
 });
 </script>
 
 <template>
   <MainLayout>
     <div class="grid grid-row-[1fr] grid-cols-3 h-full min-h-0">
-      <ChatsPane>
+      <ChatsPane @chatCreated="fetchChats">
         <ChatPreview
           v-for="chat in chatStore.chats"
           :chat="chat"

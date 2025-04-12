@@ -6,4 +6,16 @@ async function getUserChats() {
   });
 }
 
-export { getUserChats };
+async function createUserChat(username: string) {
+  return await axios.post(
+    "http://localhost:8080/v1/chat",
+    {
+      username: username,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+}
+
+export { getUserChats, createUserChat };
