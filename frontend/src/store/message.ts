@@ -7,9 +7,11 @@ export const useMessageStore = defineStore("message", {
   }),
   actions: {
     setMessages(messages: Message[], chatId: string) {
+      console.log(`Settings message ${messages} with chatId ${chatId}`);
       this.messages.set(chatId, messages);
     },
     addMessage(message: Message, chatId: string) {
+      console.log("HELLO");
       if (!this.messages.has(chatId)) {
         this.messages.set(chatId, []);
       }

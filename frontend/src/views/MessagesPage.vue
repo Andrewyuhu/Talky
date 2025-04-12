@@ -8,12 +8,22 @@ import type { Chat } from "../types/messages";
 import { useChatStore } from "../store/chat";
 import ChatPreview from "../components/ChatPreview.vue";
 import { useMessageStore } from "../store/message";
+import { type Message } from "../types/messages";
+import { getChatMessages } from "../api/messages";
 
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
-const currentChatId = ref("-1");
+const currentChatId = ref("0");
 
-function handleChatSwitch(chatId: number) {
+async function handleChatSwitch(chatId: number) {
+  try {
+    const response = await getChatMessages(chatId);
+    const messages: Message[] = response.data.messages;
+    messageStore.setMessages(messages, String(chatId));
+  } catch (err) {
+    console.log(err);
+    return;
+  }
   currentChatId.value = String(chatId);
 }
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Message from "./Message.vue";
 import useWebSocket from "../utils/useWebSocket";
-import { watch, ref, toRef } from "vue";
+import { watch, ref, toRef, nextTick } from "vue";
 import { useAuthStore } from "../store/auth";
 import { type Message as MessageType } from "../types/messages";
 
@@ -10,9 +10,11 @@ const props = defineProps<{
   messages: MessageType[];
   recipientUsername: string;
 }>();
+
 const chatId = toRef(props, "chatId");
 const messageInput = ref("");
 const auth = useAuthStore();
+const chatPaneRef = ref<HTMLDivElement | null>(null);
 
 const { isConnected, send } = useWebSocket(
   "ws://localhost:8080/v1/ws/chat/",
@@ -29,13 +31,24 @@ function handleSubmit(e: Event) {
   send(auth.user.id, messageInput.value, new Date().toISOString());
   messageInput.value = "";
 }
+
+watch([chatId, () => props.messages.length], async () => {
+  await nextTick();
+  const pane = chatPaneRef.value;
+  if (pane) {
+    pane.scrollTop = pane.scrollHeight;
+  }
+});
 </script>
 
 <template>
   <div v-if="chatId == ''">No chat open</div>
   <div v-else-if="auth.user" class="flex flex-col flex-1 min-h-0">
     <div class="bg-blue-500 p-4">{{ recipientUsername }}</div>
-    <div class="flex flex-col flex-1 p-2 overflow-y-auto gap-2">
+    <div
+      ref="chatPaneRef"
+      class="flex flex-col flex-1 p-2 overflow-y-auto gap-2"
+    >
       <div class="mb-auto"></div>
       <Message
         v-for="message in messages"

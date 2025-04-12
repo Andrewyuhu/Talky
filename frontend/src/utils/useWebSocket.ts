@@ -25,7 +25,6 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
     ws.onopen = () => {
       isConnected.value = true;
       console.log(socket.value);
-      console.log("Connected to new websocket");
     };
 
     ws.onmessage = (event) => {
@@ -36,7 +35,6 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
     };
 
     ws.onerror = (err) => {
-      console.log("uhoh");
       console.log(err);
       error.value = err;
     };
@@ -62,7 +60,6 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
         sentAt,
         chatId: Number(chatIdRef.value),
       };
-      console.log(JSON.stringify(newMessage));
       socket.value.send(JSON.stringify(newMessage));
     } else {
       console.log("error sending message");
