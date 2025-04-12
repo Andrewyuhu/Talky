@@ -32,10 +32,11 @@ var (
 
 // Client is a middleman between the websocket connection and the Hub.
 type Client struct {
-	Hub  *Hub
-	DB   *data.MessageModel
-	Conn *websocket.Conn
-	Send chan []byte
+	Hub          *Hub
+	MessageModel *data.MessageModel
+	ChatModel    *data.ChatModel
+	Conn         *websocket.Conn
+	Send         chan []byte
 }
 
 // readPump pumps messages from the websocket connection to the Hub.
@@ -72,7 +73,8 @@ func (c *Client) ReadPump() {
 			continue
 		}
 
-		go c.DB.Insert(m) // janky way of inserting msg into DB for now
+		go c.MessageModel.Insert(m)
+		go c.ChatModel.UpdatePreview(m.Message, m.SentAt, m.ChatId)
 
 		c.Hub.broadcast <- message
 	}

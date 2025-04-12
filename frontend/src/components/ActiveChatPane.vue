@@ -44,7 +44,9 @@ watch([chatId, () => props.messages.length], async () => {
 <template>
   <div v-if="chatId == ''">No chat open</div>
   <div v-else-if="auth.user" class="flex flex-col flex-1 min-h-0">
-    <div class="bg-blue-500 p-4">{{ recipientUsername }}</div>
+    <div class="p-4 text-lg border-b-[1px] border-gray-300">
+      {{ recipientUsername }}
+    </div>
     <div
       ref="chatPaneRef"
       class="flex flex-col flex-1 p-2 overflow-y-auto gap-2"

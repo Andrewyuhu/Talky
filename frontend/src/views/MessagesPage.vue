@@ -13,7 +13,7 @@ import { getChatMessages } from "../api/messages";
 
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
-const currentChatId = ref("0");
+const currentChatId = ref("");
 
 async function handleChatSwitch(chatId: number) {
   try {

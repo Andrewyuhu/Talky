@@ -5,8 +5,8 @@ console.log(props.chat);
 </script>
 
 <template>
-  <div class="flex flex-col bg-fuchsia-300 p-4">
+  <div class="flex flex-col p-4 border rounded-lg cursor-pointer">
     <div>Chat ID {{ chat.id }} - {{ chat.recieverUserName }}</div>
-    <div>{{ chat.last_message_content }}</div>
+    <div class="text-gray-600">{{ chat.last_message_content }}</div>
   </div>
 </template>

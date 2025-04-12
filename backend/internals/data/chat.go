@@ -3,6 +3,7 @@ package data
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -109,6 +110,22 @@ func (m *ChatModel) Exists(chatID int) (bool, error) {
 		return false, err
 	}
 	return exists, nil
+}
+
+func (m *ChatModel) UpdatePreview(message string, sentAt time.Time, chatID int) error {
+	stmt := `
+	UPDATE chats
+	SET  last_message_content = $1,
+    	last_message_at = $2
+	WHERE id = $3;
+	`
+	_, err := m.db.Exec(stmt, message, sentAt, chatID)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 func (m *ChatModel) UserBelongsToChat(chatID int, userID uuid.UUID) (bool, error) {
