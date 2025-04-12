@@ -21,6 +21,10 @@ const currentChatMessages = computed(() => {
   return messageStore.messages.get(currentChatId.value) || [];
 });
 
+const currentRecipient = computed(() => {
+  return chatStore.getRecipientName(currentChatId.value);
+});
+
 onMounted(async () => {
   try {
     const response = await getUserChats();
@@ -46,6 +50,7 @@ onMounted(async () => {
       <ActiveChatPane
         class="col-span-2"
         :chatId="currentChatId"
+        :recipientUsername="currentRecipient"
         :messages="currentChatMessages"
       >
       </ActiveChatPane>

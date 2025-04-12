@@ -5,7 +5,11 @@ import { watch, ref, toRef } from "vue";
 import { useAuthStore } from "../store/auth";
 import { type Message as MessageType } from "../types/messages";
 
-const props = defineProps<{ chatId: string; messages: MessageType[] }>();
+const props = defineProps<{
+  chatId: string;
+  messages: MessageType[];
+  recipientUsername: string;
+}>();
 const chatId = toRef(props, "chatId");
 const messageInput = ref("");
 const auth = useAuthStore();
@@ -13,10 +17,6 @@ const { isConnected, send } = useWebSocket(
   "ws://localhost:8080/v1/ws/chat/",
   chatId
 );
-
-watch(chatId, (n, o) => {
-  console.log("Changing from chat " + o + " to " + n);
-});
 
 watch(isConnected, () => {
   console.log(`Connection Status : ${isConnected.value}`);
@@ -33,7 +33,7 @@ function handleSubmit(e: Event) {
 <template>
   <div v-if="chatId == ''">No chat open</div>
   <div v-else-if="auth.user" class="flex flex-col flex-1 min-h-0">
-    <div class="bg-blue-500 p-4">Chat Header</div>
+    <div class="bg-blue-500 p-4">{{ recipientUsername }}</div>
     <div class="flex flex-col flex-1 p-2 overflow-y-auto gap-2">
       <div class="mb-auto"></div>
       <Message

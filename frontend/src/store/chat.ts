@@ -20,5 +20,12 @@ export const useChatStore = defineStore("chats", {
       }
       c.last_message_content = message;
     },
+    getRecipientName(chatId: string): string {
+      const c = this.chats.find((chat) => String(chat.id) === chatId);
+      if (!c) {
+        return "";
+      }
+      return c.recieverUserName;
+    },
   },
 });
