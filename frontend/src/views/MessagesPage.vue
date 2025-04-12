@@ -11,7 +11,7 @@ import { useMessageStore } from "../store/message";
 
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
-const currentChatId = ref("");
+const currentChatId = ref("-1");
 
 function handleChatSwitch(chatId: number) {
   currentChatId.value = String(chatId);

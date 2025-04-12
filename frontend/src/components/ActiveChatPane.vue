@@ -13,6 +13,7 @@ const props = defineProps<{
 const chatId = toRef(props, "chatId");
 const messageInput = ref("");
 const auth = useAuthStore();
+
 const { isConnected, send } = useWebSocket(
   "ws://localhost:8080/v1/ws/chat/",
   chatId

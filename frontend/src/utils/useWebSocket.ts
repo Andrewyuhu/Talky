@@ -30,12 +30,13 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
 
     ws.onmessage = (event) => {
       let msg = JSON.parse(event.data) as Message;
-      let chatId = msg.chatId;
+      let chatId = String(msg.chatId);
       chatStore.updateChatPreview(msg.message, chatId);
       messageStore.addMessage(msg, chatId);
     };
 
     ws.onerror = (err) => {
+      console.log("uhoh");
       console.log(err);
       error.value = err;
     };
@@ -59,7 +60,7 @@ export default function useWebSocket(url: string, chatIdRef: Ref<string>) {
         senderId,
         message: content,
         sentAt,
-        chatId: chatIdRef.value,
+        chatId: Number(chatIdRef.value),
       };
       console.log(JSON.stringify(newMessage));
       socket.value.send(JSON.stringify(newMessage));

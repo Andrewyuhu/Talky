@@ -6,9 +6,6 @@ const props = defineProps<{
   senderId: string;
 }>();
 
-console.log(props.senderId);
-console.log(props.message.senderId);
-
 const isUser = ref(props.senderId == props.message.senderId);
 </script>
 
