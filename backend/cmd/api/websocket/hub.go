@@ -92,6 +92,7 @@ func (h *Hub) Run() {
 			}
 
 		case message := <-h.broadcast:
+			fmt.Printf("Recieving message on hub %s\n", h.id)
 			for client := range h.clients {
 				select {
 				case client.Send <- message:
@@ -100,7 +101,6 @@ func (h *Hub) Run() {
 					delete(h.clients, client)
 				}
 			}
-
 		}
 	}
 

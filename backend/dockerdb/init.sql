@@ -19,3 +19,14 @@ CREATE TABLE chats (
     CONSTRAINT fk_user2 FOREIGN KEY (user2_id) REFERENCES users(id),
     CONSTRAINT unique_pair UNIQUE (user1_id, user2_id)
 );
+
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    sender_id UUID NOT NULL,
+    message TEXT NOT NULL,
+    sent_at TIMESTAMPTZ NOT NULL,
+    chat_id INTEGER NOT NULL,
+
+    CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES users(id),
+    CONSTRAINT fk_chat_id FOREIGN KEY (chat_id) REFERENCES chats(id)
+);

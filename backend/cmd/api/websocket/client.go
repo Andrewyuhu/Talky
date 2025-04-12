@@ -1,7 +1,10 @@
 package hub
 
 import (
+	"backend/internals/data"
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -29,12 +32,9 @@ var (
 
 // Client is a middleman between the websocket connection and the Hub.
 type Client struct {
-	Hub *Hub
-
-	// The websocket connection.
+	Hub  *Hub
+	DB   *data.MessageModel
 	Conn *websocket.Conn
-
-	// Buffered channel of outbound messages.
 	Send chan []byte
 }
 
@@ -61,6 +61,19 @@ func (c *Client) ReadPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+
+		var m data.Message
+
+		err = json.Unmarshal(message, &m)
+
+		if err != nil {
+			fmt.Println("Invalid message, discarding...")
+			fmt.Println(err)
+			continue
+		}
+
+		go c.DB.Insert(m) // janky way of inserting msg into DB for now
+
 		c.Hub.broadcast <- message
 	}
 }

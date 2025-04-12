@@ -13,12 +13,13 @@ import (
 )
 
 type application struct {
-	cfg         config
-	errorLogger *log.Logger
-	infoLogger  *log.Logger
-	usermodel   *data.UserModel
-	chatmodel   *data.ChatModel
-	hubManager  *hub.HubManager
+	cfg          config
+	errorLogger  *log.Logger
+	infoLogger   *log.Logger
+	usermodel    *data.UserModel
+	chatmodel    *data.ChatModel
+	messagemodel *data.MessageModel
+	hubManager   *hub.HubManager
 }
 
 type config struct {
@@ -51,6 +52,7 @@ func main() {
 
 	app.usermodel = data.NewUserModel(db)
 	app.chatmodel = data.NewChatModel(db)
+	app.messagemodel = data.NewMessageModel(db)
 
 	app.infoLogger.Println("Connected to database")
 

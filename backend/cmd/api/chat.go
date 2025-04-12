@@ -39,7 +39,7 @@ func (app *application) serveWs(w http.ResponseWriter, r *http.Request) {
 		room = app.hubManager.AddRoom(id)
 	}
 	go room.Run()
-	client := &hub.Client{Hub: room, Conn: conn, Send: make(chan []byte, 256)}
+	client := &hub.Client{Hub: room, DB: app.messagemodel, Conn: conn, Send: make(chan []byte, 256)}
 	room.Register <- client
 
 	go client.WritePump()
