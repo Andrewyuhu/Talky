@@ -23,7 +23,7 @@ async function handleCreateChat(e: Event) {
 </script>
 
 <template>
-  <div class="flex flex-col p-4 gap-2 border-r-[1px] border-gray-300">
+  <div class="flex flex-col p-4 gap-2 border-r-[1px] border-gray-300 flex-1">
     <form class="flex gap-2">
       <input
         v-model="recipientUsernameInput"
@@ -32,7 +32,7 @@ async function handleCreateChat(e: Event) {
       />
       <button
         @click="handleCreateChat"
-        class="border-2 px-4 py-2 rounded-md border-black z-10 bg-white"
+        class="border-2 px-4 py-2 rounded-md border-black bg-white"
       >
         CREATE
       </button>

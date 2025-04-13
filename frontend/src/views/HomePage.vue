@@ -4,7 +4,9 @@ import MainLayout from "../layouts/MainLayout.vue";
 
 <template>
   <MainLayout>
-    <div class="flex flex-grow justify-center gap-32 px-16 py-[100px]">
+    <div
+      class="flex flex-col items-center lg:items-stretch lg:flex-row flex-grow justify-center gap-32 px-16 py-[100px]"
+    >
       <div class="flex flex-col gap-10 items-start">
         <h1 class="font-bold text-[32px] mb-4">
           Amazing, never before seen, fantastic messaging service

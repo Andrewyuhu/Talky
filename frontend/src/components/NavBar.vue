@@ -6,12 +6,9 @@ import { useRouter } from "vue-router";
 const auth = useAuthStore();
 const route = useRouter();
 const navItems = ref([
-  { label: "Home", route: "/" },
   { label: "Sign Up", route: "/signup" },
   { label: "Login", route: "/login" },
 ]);
-
-const authNavItems = ref([{ label: "Messages", route: "/messages" }]);
 
 async function logoutHandler() {
   await auth.logout();
@@ -26,10 +23,12 @@ async function logoutHandler() {
   <nav
     class="flex justify-between items-center h-[8vh] px-8 border-b border-gray-300 flex-shrink-0"
   >
-    <div class="flex items-center gap-4 text-xl">
-      <img src="../assets/logo.png" class="aspect-auto w-20" />
-      Talky
-    </div>
+    <router-link to="/">
+      <div class="flex items-center gap-4 text-lg md:text-xl">
+        <img src="../assets/logo.png" class="aspect-auto w-14 md:w-20" />
+        Talky
+      </div>
+    </router-link>
     <ul>
       <div v-if="!auth.isAuthenticated" class="flex gap-6 hover:cursor-pointer">
         <router-link v-for="item in navItems" :to="item.route">
@@ -39,11 +38,6 @@ async function logoutHandler() {
         </router-link>
       </div>
       <div v-else class="flex gap-6 hover:cursor-pointer">
-        <router-link v-for="item in authNavItems" :to="item.route">
-          <div class="px-3 py-1 hover:bg-slate-100 rounded-lg">
-            {{ item.label }}
-          </div>
-        </router-link>
         <div
           class="px-3 py-1 hover:bg-slate-100 rounded-lg"
           @click="logoutHandler"

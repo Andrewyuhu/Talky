@@ -14,6 +14,13 @@ import { getChatMessages } from "../api/messages";
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
 const currentChatId = ref("");
+const isMobile = ref(false);
+const mobilePaneActive = ref(false);
+
+window.addEventListener("resize", () => {
+  console.log(window.innerWidth);
+  isMobile.value = window.innerWidth < 1024;
+});
 
 async function handleChatSwitch(chatId: number) {
   try {
@@ -25,6 +32,9 @@ async function handleChatSwitch(chatId: number) {
     return;
   }
   currentChatId.value = String(chatId);
+  mobilePaneActive.value = !mobilePaneActive.value;
+  console.log(mobilePaneActive.value);
+  console.log(isMobile.value);
 }
 
 const currentChatMessages = computed(() => {
@@ -52,7 +62,9 @@ onMounted(async () => {
 
 <template>
   <MainLayout>
-    <div class="grid grid-row-[1fr] grid-cols-3 h-full min-h-0">
+    <div
+      class="flex lg:grid lg:grid-row-[1fr] lg:grid-cols-3 h-full min-h-0 relative w-screen overflow-hidden"
+    >
       <ChatsPane @chatCreated="fetchChats">
         <ChatPreview
           v-for="chat in chatStore.chats"
@@ -66,6 +78,9 @@ onMounted(async () => {
         :chatId="currentChatId"
         :recipientUsername="currentRecipient"
         :messages="currentChatMessages"
+        :mobilePaneActive="mobilePaneActive"
+        :isMobile="isMobile"
+        @closeMobilePane="mobilePaneActive = false"
       >
       </ActiveChatPane>
     </div>
