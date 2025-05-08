@@ -23,7 +23,9 @@ async function handleCreateChat(e: Event) {
 </script>
 
 <template>
-  <div class="flex flex-col p-4 gap-2 flex-1">
+  <div
+    class="flex flex-col p-4 gap-2 flex-1 bg-[hsl(35,76%,92.5%)] rounded-md lg:shadow-lg"
+  >
     <form class="flex gap-2 h-[2rem]">
       <input
         v-model="recipientUsernameInput"

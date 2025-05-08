@@ -53,17 +53,17 @@ console.log(props.isMobile);
 <template>
   <div
     v-if="chatId == ''"
-    class="flex flex-col right-[-100vw] z-10 h-full min-h-0 absolute w-screen lg:static bg-[hsl(35,76%,92.5%)] lg:w-auto transition-transform transform"
+    class="flex flex-col items-center justify-center right-[-100vw] z-10 h-full min-h-0 absolute w-screen lg:static bg-[hsl(35,76%,92.5%)] lg:w-auto transition-transform transform rounded-md lg:shadow-md"
     :class="{
       'translate-x-0': isMobile && mobilePaneActive,
       'translate-x-full': isMobile && !mobilePaneActive,
     }"
   >
-    No chat open
+    No chat open...
   </div>
   <div
     v-else-if="auth.user"
-    class="flex flex-col right-[-100vw] z-10 h-full min-h-0 absolute w-screen lg:static bg-[hsl(35,76%,92.5%)] lg:w-auto transition-transform transform"
+    class="flex flex-col right-[-100vw] z-10 h-full min-h-0 absolute w-screen lg:static bg-[hsl(35,76%,92.5%)] lg:w-auto transition-transform transform rounded-md lg:shadow-lg"
     :class="{
       '-translate-x-full': isMobile && mobilePaneActive,
       'translate-x-0': isMobile && !mobilePaneActive,

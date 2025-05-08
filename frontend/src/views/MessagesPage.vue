@@ -61,7 +61,7 @@ onMounted(async () => {
 <template>
   <MainLayout>
     <div
-      class="flex lg:grid lg:grid-row-[1fr] lg:grid-cols-3 flex-grow min-h-0 relative w-full overflow-hidden bg-[hsl(35,76%,92.5%)] rounded-lg shadow-md"
+      class="flex lg:grid lg:grid-row-[1fr] lg:grid-cols-3 lg:gap-4 flex-grow min-h-0 relative w-full overflow-hidden rounded-lg shadow-md lg:px-4"
     >
       <ChatsPane @chatCreated="fetchChats">
         <template v-if="chatStore.chats && chatStore.chats.length">
@@ -74,7 +74,7 @@ onMounted(async () => {
         </template>
         <div
           v-else
-          class="w-full text-zinc-500 flex flex-col items-center text-sm"
+          class="w-full text-zinc-500 flex flex-col items-center text-sm bg-[hsl(35,76%,92.5%)]"
         >
           <img
             class="block h-auto w-1/2 translate-x-[2ch] mt-[200px] mb-2"
