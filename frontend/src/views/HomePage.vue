@@ -11,10 +11,14 @@ import MainLayout from "../layouts/MainLayout.vue";
         <div
           class="hero-text text-white text-center z-10 w-2/3 flex flex-col gap-4"
         >
-          <h1 class="font-bold text-xl text-white text-balance">
+          <h1
+            class="font-bold text-xl text-white text-balance md:text-2xl lg:text-3xl"
+          >
             Because everyone deserves to be close.
           </h1>
-          <p class="text-sm text-neutral-200">
+          <p
+            class="text-sm text-neutral-200 md:text-base inline-block md:w-[50ch] mx-auto text-balance"
+          >
             From family to friends, colleagues to communities, make connections
             feel effortless, no matter the distance.
           </p>

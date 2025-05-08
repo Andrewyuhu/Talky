@@ -113,7 +113,7 @@ function isValidForm(): boolean {
 <template>
   <div class="w-full">
     <form
-      class="flex flex-col gap-4 items-center w-[85%] mt-24 mx-auto px-4 py-8 rounded-md shadow-md border-1 border-black.0.5"
+      class="flex flex-col gap-4 items-center w-[85%] md:w-[500px] mt-24 mx-auto px-4 py-8 rounded-md shadow-md border-1 border-black.0.5"
     >
       <h2 class="text-xl self-start text-primary-text font-semibold">
         Sign up

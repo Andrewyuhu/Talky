@@ -27,7 +27,7 @@ async function logoutHandler() {
       <div
         class="flex items-center text-lg text-secondary-green tracking-tight font-bold md:text-xl"
       >
-        <img src="../assets/logo.png" class="aspect-auto w-8 md:w-20" />
+        <img src="../assets/logo.png" class="aspect-auto w-8 md:w-10" />
         Talky
       </div>
     </router-link>
