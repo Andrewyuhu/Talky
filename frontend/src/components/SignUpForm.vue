@@ -111,50 +111,59 @@ function isValidForm(): boolean {
 </script>
 
 <template>
-  <div
-    class="w-9/10 sm:w-2/3 lg:w-2/5 2xl:w-1/5 border-2 self-start p-8 rounded-md"
-  >
-    <form class="flex flex-col gap-4 items-center">
-      <h2 class="text-2xl font-bold">Sign up right now!</h2>
+  <div class="w-full">
+    <form
+      class="flex flex-col gap-4 items-center w-[85%] mt-24 mx-auto px-4 py-8 rounded-md shadow-md border-1 border-black.0.5"
+    >
+      <h2 class="text-xl self-start text-primary-text font-semibold">
+        Sign up
+      </h2>
       <div class="flex flex-col w-full">
-        <label for="email">Email</label>
+        <label for="email" class="text-sm text-zinc-500 mb-0.5">Email</label>
         <input
           v-model="emailInput"
           type="email"
           name="email"
-          class="border border-gray-400 rounded-lg px-4 py-2"
+          class="border border-primary-text rounded-lg px-4 py-2 text-primary-text"
         />
-        <span v-if="errors.has('email')" class="text-red-600">{{
+        <span v-if="errors.has('email')" class="text-red-500 text-sm mt-0.5">{{
           errors.get("email")
         }}</span>
       </div>
-
       <div class="flex flex-col w-full">
-        <label for="username">Username</label>
+        <label for="username" class="text-sm text-zinc-500 mb-0.5"
+          >Username</label
+        >
         <input
           v-model="usernameInput"
           type="text"
           name="username"
-          class="border border-gray-400 rounded-lg px-4 py-2"
+          class="border border-primary-text rounded-lg px-4 py-2 text-primary-text"
         />
-        <span v-if="errors.has('username')" class="text-red-600">{{
-          errors.get("username")
-        }}</span>
+        <span
+          v-if="errors.has('username')"
+          class="text-red-500 text-sm mt-0.5"
+          >{{ errors.get("username") }}</span
+        >
       </div>
       <div class="flex flex-col w-full">
-        <label for="passowrd">Password</label>
+        <label for="passowrd" class="text-sm text-zinc-500 mb-0.5"
+          >Password</label
+        >
         <input
           v-model="passwordInput"
           type="password"
           name="password"
-          class="border border-gray-400 rounded-lg px-4 py-2"
+          class="border border-primary-text rounded-lg px-4 py-2 text-primary-text"
         />
-        <span v-if="errors.has('password')" class="text-red-600">{{
-          errors.get("password")
-        }}</span>
+        <span
+          v-if="errors.has('password')"
+          class="text-red-500 text-sm mt-0.5"
+          >{{ errors.get("password") }}</span
+        >
       </div>
       <button
-        class="border-2 px-4 py-2 rounded-md border-black z-10 bg-white w-full"
+        class="px-3 py-1 rounded-lg text-primary-text bg-primary-green border-solid border border-primary-text w-full"
         @click="submitForm"
       >
         Sign Up

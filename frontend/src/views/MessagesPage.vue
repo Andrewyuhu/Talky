@@ -18,7 +18,6 @@ const isMobile = ref(false);
 const mobilePaneActive = ref(false);
 
 window.addEventListener("resize", () => {
-  console.log(window.innerWidth);
   isMobile.value = window.innerWidth < 1024;
 });
 
@@ -33,8 +32,6 @@ async function handleChatSwitch(chatId: number) {
   }
   currentChatId.value = String(chatId);
   mobilePaneActive.value = !mobilePaneActive.value;
-  console.log(mobilePaneActive.value);
-  console.log(isMobile.value);
 }
 
 const currentChatMessages = computed(() => {
@@ -56,6 +53,7 @@ async function fetchChats() {
 }
 
 onMounted(async () => {
+  isMobile.value = window.innerWidth < 1024;
   fetchChats();
 });
 </script>
@@ -63,15 +61,28 @@ onMounted(async () => {
 <template>
   <MainLayout>
     <div
-      class="flex lg:grid lg:grid-row-[1fr] lg:grid-cols-3 h-full min-h-0 relative w-screen overflow-hidden"
+      class="flex lg:grid lg:grid-row-[1fr] lg:grid-cols-3 flex-grow min-h-0 relative w-full overflow-hidden bg-[hsl(35,76%,92.5%)] rounded-lg shadow-md"
     >
       <ChatsPane @chatCreated="fetchChats">
-        <ChatPreview
-          v-for="chat in chatStore.chats"
-          :chat="chat"
-          :key="chat.id"
-          @click="handleChatSwitch(chat.id)"
-        ></ChatPreview>
+        <template v-if="chatStore.chats && chatStore.chats.length">
+          <ChatPreview
+            v-for="chat in chatStore.chats"
+            :key="chat.id"
+            :chat="chat"
+            @click="handleChatSwitch(chat.id)"
+          />
+        </template>
+        <div
+          v-else
+          class="w-full text-zinc-500 flex flex-col items-center text-sm"
+        >
+          <img
+            class="block h-auto w-1/2 translate-x-[2ch] mt-[200px] mb-2"
+            src="../assets/no-messages-2.png"
+            alt="A man looking for messages"
+          />
+          No Messages Yet...
+        </div>
       </ChatsPane>
       <ActiveChatPane
         class="col-span-2"

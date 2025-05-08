@@ -53,7 +53,7 @@ console.log(props.isMobile);
 <template>
   <div
     v-if="chatId == ''"
-    class="absolute top-0 left-0 w-screen h-full flex items-center justify-center text-2xl bg-white lg:static lg:w-auto lg:h-auto transition-transform transform"
+    class="flex flex-col right-[-100vw] z-10 h-full min-h-0 absolute w-screen lg:static bg-[hsl(35,76%,92.5%)] lg:w-auto transition-transform transform"
     :class="{
       'translate-x-0': isMobile && mobilePaneActive,
       'translate-x-full': isMobile && !mobilePaneActive,
@@ -63,13 +63,15 @@ console.log(props.isMobile);
   </div>
   <div
     v-else-if="auth.user"
-    class="flex flex-col right-[-100vw] z-10 h-full min-h-0 absolute w-screen lg:static bg-white lg:w-auto transition-transform transform"
+    class="flex flex-col right-[-100vw] z-10 h-full min-h-0 absolute w-screen lg:static bg-[hsl(35,76%,92.5%)] lg:w-auto transition-transform transform"
     :class="{
       '-translate-x-full': isMobile && mobilePaneActive,
       'translate-x-0': isMobile && !mobilePaneActive,
     }"
   >
-    <div class="flex gap-4 p-4 text-lg border-b-[1px] border-gray-300 bg-white">
+    <div
+      class="flex gap-4 p-4 text-lg border-b-[1px] border-gray-300/0.5 bg-[hsl(35,76%,92.5%)] font-semibold shadow-sm"
+    >
       <button
         v-if="isMobile && mobilePaneActive"
         @click="emit('closeMobilePane')"
@@ -95,7 +97,7 @@ console.log(props.isMobile);
     </div>
     <div
       ref="chatPaneRef"
-      class="flex flex-col flex-1 p-2 overflow-y-auto gap-2"
+      class="flex flex-col flex-1 p-4 overflow-y-auto gap-2"
     >
       <div class="mb-auto"></div>
       <Message
@@ -104,7 +106,7 @@ console.log(props.isMobile);
         :senderId="auth.user.id"
       ></Message>
     </div>
-    <div class="p-2">
+    <div class="p-4">
       <form class="flex gap-2">
         <input
           type="text"
@@ -112,7 +114,7 @@ console.log(props.isMobile);
           class="flex-1 border border-gray-400 rounded-lg px-4 py-2"
         />
         <button
-          class="border-2 px-4 py-2 rounded-md border-black z-10 bg-white"
+          class="px-3 py-1 rounded-lg text-primary-text bg-primary-green border-solid border border-primary-text"
           @click="handleSubmit"
         >
           SEND

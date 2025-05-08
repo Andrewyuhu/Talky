@@ -4,53 +4,41 @@ import MainLayout from "../layouts/MainLayout.vue";
 
 <template>
   <MainLayout>
-    <div
-      class="flex flex-col items-center lg:items-stretch lg:flex-row flex-grow justify-center gap-32 px-16 py-[100px]"
-    >
-      <div class="flex flex-col gap-10 items-start">
-        <h1 class="font-bold text-[32px] mb-4">
-          Amazing, never before seen, fantastic messaging service
-        </h1>
-        <p>
-          Send messages to your friend(s) blazingly fast. Best of all, your
-          messages are <br />
-          <span class="font-bold bg-clip-text text-transparent rainbow-bg">
-            NOT ENCRYPTED</span
-          >
-          either so you never have to worry if your data is private or not!
-          <br />
-        </p>
-        <div class="relative group">
-          <button
-            class="relative border-2 px-4 py-2 rounded-md border-black z-10 bg-white"
-          >
-            <router-link to="/signup">SIGN UP NOW</router-link>
-          </button>
-          <div
-            class="absolute top-0 right-0 text-3xl z-0 group-hover:translate-x-10 ease-in-out duration-200"
-          >
-            👍
-          </div>
+    <main class="flex-grow flex justify-center px-4 pb-4">
+      <div
+        class="relative isolate flex items-center justify-center bg-[url(./assets/hero-image-2.jpeg)] w-full rounded-lg hero-container bg-cover bg-center"
+      >
+        <div
+          class="hero-text text-white text-center z-10 w-2/3 flex flex-col gap-4"
+        >
+          <h1 class="font-bold text-xl text-white text-balance">
+            Because everyone deserves to be close.
+          </h1>
+          <p class="text-sm text-neutral-200">
+            From family to friends, colleagues to communities, make connections
+            feel effortless, no matter the distance.
+          </p>
+          <router-link to="/signup">
+            <div
+              class="px-3 py-1 rounded-lg text-primary-text text-sm bg-primary-green border-solid border border-primary-text w-fit mx-auto"
+            >
+              Sign Up
+            </div>
+          </router-link>
         </div>
       </div>
-      <div>
-        <img src="../assets/epic.png" alt="sad" />
-      </div>
-    </div>
+    </main>
   </MainLayout>
 </template>
 
-<style scoped>
-.rainbow-bg {
-  background-image: linear-gradient(
-    to right,
-    red,
-    orange,
-    yellow,
-    green,
-    blue,
-    indigo,
-    violet
-  );
+<style>
+.hero-container::after {
+  position: absolute;
+  content: "";
+  z-index: 1;
+  inset: 0;
+  background: black;
+  opacity: 0.2;
+  border-radius: inherit;
 }
 </style>

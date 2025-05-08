@@ -5,7 +5,7 @@ import SignUpForm from "../components/SignUpForm.vue";
 
 <template>
   <MainLayout>
-    <div class="flex flex-grow justify-center gap-32 px-16 py-[100px]">
+    <div class="flex flex-grow justify-center">
       <SignUpForm></SignUpForm>
     </div>
   </MainLayout>

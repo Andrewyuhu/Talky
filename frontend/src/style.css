@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-primary-green: #22d266;
+  --color-background: #fcf4e9;
+  --color-text: #1c1e21;
+  --color-light-green: #77d694;
+}

@@ -5,7 +5,7 @@ import LoginForm from "../components/LoginForm.vue";
 
 <template>
   <MainLayout>
-    <div class="flex flex-grow justify-center gap-32 px-16 py-[100px]">
+    <div class="flex flex-grow justify-center">
       <LoginForm></LoginForm>
     </div>
   </MainLayout>
